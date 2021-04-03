@@ -18,7 +18,7 @@ local function makeKeys(x, y, width, height, octaves)
 
 	local keys = {}
 	for i = 1,numKeys do
-		local px = x + (i-1) * w
+		local px = x + (numKeys - i) * w
 		table.insert(keys, Key(i, px, y, w, h))
 	end
 	return keys
@@ -29,7 +29,7 @@ local function makeSprings(x, y, width, height, octaves)
 	local y0 = y + keyHeight * height
 	local springs = {}
 	for i = 1,numKeys do
-		local rx = (i - 0.5) / numKeys
+		local rx = (numKeys - i + 0.5) / numKeys
 		local px = x + rx * width
 		local py = y + backPosition(rx) * height
 		table.insert(springs, Spring(px, y0, px, py))
