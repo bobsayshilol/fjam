@@ -1,8 +1,27 @@
 
 -- Globals
+g_globals = {}
+
+-- 180bpm, 4b -> 12/s
+g_globals.fnf = "12" ..
+	"c4c4c1e1f1h1j2c4" ..
+	"c2c2c2f2c2e2c2" ..
+	"c4c4c1e1f1h1j2c4" ..
+	"c2c2c2f2c2h1c1a2"
+
+-- 180bpm, 4b -> 12/s
+g_globals.hexagon = "12" ..
+	"k2n2m2r2k4k4" ..
+	"k2n2m2r2k4k4" ..
+	"k2n2m2r2k4k4" ..
+	"k2n2m2r2k4k4"
+
+g_globals.levelString = g_globals.fnf
+
+
+-- Locals
 local g_curState
 local g_states
-
 
 -- Safely call a method
 local function callMethod(obj, name, ...)

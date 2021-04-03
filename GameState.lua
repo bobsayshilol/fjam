@@ -59,21 +59,7 @@ function class.new()
 		self.npcPiano = Piano(w/32, h/16, w*14/32, h*14/16)
 		self.playerPiano = Piano(w*17/32, h/16, w*14/32, h*14/16)
 		
-		-- 180bpm, 4b -> 12/s
-		self.notes = parseLevel("12" ..
-			"c4c4c1e1f1h1j2c4" ..
-			"c2c2c2f2c2e2c2" ..
-			"c4c4c1e1f1h1j2c4" ..
-			"c2c2c2f2c2h1c1a2"
-			)
-		
-		-- 180bpm, 4b -> 12/s
-		self.notes = parseLevel("12" ..
-			"k2n2m2r2k4k4" ..
-			"k2n2m2r2k4k4" ..
-			"k2n2m2r2k4k4" ..
-			"k2n2m2r2k4k4"
-			)
+		self.notes = parseLevel(g_globals.levelString)
 		--[[
 		local notes = "10"
 		for i = 1,3*12 do
