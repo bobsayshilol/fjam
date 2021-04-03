@@ -1,5 +1,5 @@
 
-local g_levelString = { text = "" }
+local g_levelString = { text = "3a1b1c1d1e1f1g1h1i1j1k1l1m1n1o1p1" }
 
 local options = {
 	{
