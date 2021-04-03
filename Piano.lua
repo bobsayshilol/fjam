@@ -45,7 +45,7 @@ function ctor(x, y, width, height)
 	local Piano = {}
 	Piano.springs = {}
 	Piano.border = makeBorder(x, y, width, height)
-	Piano.keys = makeKeys(x, y, width, height, 2)
+	Piano.keys = makeKeys(x, y, width, height, 3)
 
 	Piano.update = function(self, dt)
 		for u,spring in pairs(self.springs) do
