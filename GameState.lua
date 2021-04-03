@@ -82,6 +82,9 @@ function class.new()
 			table.remove(self.notes, 1)
 		end
 		
+		-- Update positions of the springs
+		self.playerPiano:setEndPos(love.mouse.getPosition())
+		
 		-- Update the instruments
 		self.npcPiano:update(dt)
 		self.playerPiano:update(dt)

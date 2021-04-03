@@ -100,6 +100,12 @@ function ctor(x, y, width, height)
 			spring:stop()
 		end
 	end
+	
+	Piano.setEndPos = function(self, x,y)
+		for u,spring in pairs(self.springs) do
+			spring:setEndPos(x, y)
+		end
+	end
 
 	return Piano
 end
