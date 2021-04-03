@@ -32,7 +32,7 @@ local function makeSprings(x, y, width, height, octaves)
 		local rx = (numKeys - i + 0.5) / numKeys
 		local px = x + rx * width
 		local py = y + backPosition(rx) * height
-		table.insert(springs, Spring(px, y0, px, py))
+		table.insert(springs, Spring(i, px, y0, px, py))
 	end
 	return springs
 end
