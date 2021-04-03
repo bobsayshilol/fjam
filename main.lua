@@ -4,10 +4,10 @@ g_globals = {}
 
 -- 180bpm, 4b -> 12/s
 g_globals.fnf = "12" ..
-	"c4c4c1e1f1h1j2c4" ..
-	"c2c2c2f2c2e2c2Z0" ..
-	"c4c4c1e1f1h1j2c4" ..
-	"c2c2c2f2c2h1c1a2Z0"
+	"l4l4l1n1o1q1s2l4" ..
+	"l2l2l2o2l2n2l2" ..
+	"l4l4l1n1o1q1s2l4" ..
+	"l2l2l2o2l2q1l1j2Z0"
 
 -- 180bpm, 4b -> 12/s
 g_globals.hexagon = "12" ..
