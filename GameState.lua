@@ -11,10 +11,15 @@ local function encodeKey(key)
 end
 
 local function decodeKey(ch)
-	if ch:find('%l') then
+	if ch == 'Z' then
+		-- Magic value
+		return -1
+	elseif ch:find('%l') then
 		return ch:byte() - string.byte('a') + 1
-	else
+	elseif ch:find('%u') then
 		return ch:byte() - string.byte('A') + 27
+	else
+		assert(false)
 	end
 end
 
@@ -30,8 +35,6 @@ end
 	--e--
 ]]
 local function parseLevel(text)
-	print("Parsing level '" .. text .. "'")
-
 	-- Format: <bps>(<key><time>)+
 	local split = assert(text:find("%a"))
 	local ts = 1000 / tonumber(text:sub(1, split - 1))
@@ -61,25 +64,35 @@ function class.new()
 		self.npcPiano = Piano(w/32, h/16, w*14/32, h*14/16)
 		self.playerPiano = Piano(w*17/32, h/16, w*14/32, h*14/16)
 		
-		self.notes = parseLevel(g_globals.levelString)
-		--[[
-		local notes = "10"
-		for i = 1,3*12 do
-			notes = notes .. encodeKey(i) .. i
+		local level = g_globals.levelString
+		print("Loading level '" .. level .. "'")
+		self.npcTurn = true
+		self.npcState = { time = 0, piano = self.npcPiano, notes = parseLevel(level) }
+		self.playerState = { time = 0, piano = self.playerPiano, notes = parseLevel(level) }
+	end
+	
+	state.updateNotes = function(self, dt, info)
+		info.time = info.time + dt * 1000
+		
+		-- Play the next note
+		while #info.notes > 0 and info.notes[1][1] < info.time do
+			local note = info.notes[1][2]
+			if note ~= -1 then
+				info.piano:playKey(note)
+			end
+			table.remove(info.notes, 1)
+			if note == -1 then
+				self.npcTurn = not self.npcTurn
+				break
+			end
 		end
-		print(notes)
-		self.notes = parseLevel(notes)
-		--]]
-		self.time = 0
 	end
 	
 	state.update = function(self, dt)
-		self.time = self.time + dt * 1000
-		
-		-- Play the next note
-		while #self.notes > 0 and self.notes[1][1] < self.time do
-			self.npcPiano:playKey(self.notes[1][2])
-			table.remove(self.notes, 1)
+		if self.npcTurn then
+			self:updateNotes(dt, self.npcState)
+		else
+			self:updateNotes(dt, self.playerState)
 		end
 		
 		-- Update positions of the springs
