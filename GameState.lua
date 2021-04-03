@@ -52,6 +52,7 @@ end
 
 function class.new()
 	local state = {}
+	state.next = nil
 	
 	state.enter = function(self)
 		local w,h = love.graphics.getDimensions()
@@ -96,7 +97,7 @@ function class.new()
 		-- Update the instruments
 		self.npcPiano:update(dt)
 		self.playerPiano:update(dt)
-		return nil
+		return self.next
 	end
 	
 	state.draw = function(self)
@@ -115,6 +116,15 @@ function class.new()
 				self.playerPiano:playKey(i)
 			end
 		end
+		
+		if key == "escape" then
+			state.next = "menu"
+		end
+	end
+	
+	state.exit = function(self)
+		self.npcPiano:stop()
+		self.playerPiano:stop()
 	end
 	
 	return state

@@ -57,6 +57,10 @@ function ctor(i, x0,y0, x1,y1)
 		self.sound:play()
 	end
 	
+	Spring.stop = function(self)
+		self.sound:stop()
+	end
+	
 	return Spring
 end
 

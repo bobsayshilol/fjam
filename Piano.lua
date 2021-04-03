@@ -94,6 +94,12 @@ function ctor(x, y, width, height)
 		self.keys[key]:press()
 		self.springs[key]:twang()
 	end
+	
+	Piano.stop = function(self)
+		for u,spring in pairs(self.springs) do
+			spring:stop()
+		end
+	end
 
 	return Piano
 end
