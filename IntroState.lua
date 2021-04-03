@@ -2,9 +2,10 @@
 local class = {}
 
 local lines = {
-	"This is the intro",
-	"It explains stuff",
-	"I still need to write it",
+	"The back of the Piano broke",
+	"But it still needs to be played",
+	"You must stretch the springs yourself",
+	"Make it sound good or something",
 }
 
 function class.load()
@@ -13,11 +14,10 @@ end
 function class.new()
 	local state = {}
 	state.line = 1
-	state.next = nil
 
 	state.update = function(self, dt)
 		if self.line > #lines then
-			return "splash"
+			return "game"
 		else
 			return nil
 		end

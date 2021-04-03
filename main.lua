@@ -43,6 +43,9 @@ end
 
 
 function love.load()
+	-- TODO have this as minimum or something
+	love.window.setMode(1366, 768, {minwidth=1280, minheight=720})
+	
 	setupStates()
 end
 
