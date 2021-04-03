@@ -43,7 +43,7 @@ function ctor(i, x0,y0, x1,y1)
 	end
 	
 	Spring.draw = function(self)
-		local amp = self.amplitude
+		local amp = 0.2 + 0.8 * self.amplitude
 		love.graphics.setColor(amp, amp, 0)
 		local oldWidth = love.graphics.getLineWidth()
 		love.graphics.setLineWidth(6)
