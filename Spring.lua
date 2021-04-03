@@ -2,7 +2,7 @@
 local fadeFactor = 4
 
 local sharedSound
-local function makeSound(i)
+local function makeSound()
 	if not sharedSound then
 		-- 1s of audio @ A3
 		local rate = 16000
@@ -18,9 +18,6 @@ local function makeSound(i)
 	
 	local sound = sharedSound:clone()
 	sound:setLooping(true)
-	-- index 10 is A3
-	local note = (i - 10) / 12
-	sound:setPitch(2 ^ note)
 	return sound
 end
 
@@ -30,11 +27,13 @@ function ctor(i, x0,y0, x1,y1)
 	Spring.y0 = y0
 	Spring.x1 = x1
 	Spring.y1 = y1
+	Spring.baseL = math.sqrt((Spring.x0 - Spring.x1) ^ 2 + (Spring.y0 - Spring.y1) ^ 2)
 	Spring.amplitude = 0
-	Spring.sound = makeSound(i)
+	Spring.sound = makeSound()
 	
 	Spring.update = function(self, dt)
 		if self.amplitude > 0.01 then
+			self:shiftPitch()
 			self.sound:setVolume(self.amplitude)
 			self.amplitude = self.amplitude * (1 - fadeFactor * dt)
 		else
@@ -59,6 +58,24 @@ function ctor(i, x0,y0, x1,y1)
 	
 	Spring.stop = function(self)
 		self.sound:stop()
+	end
+	
+	Spring.setEndPos = function(self, x,y)
+		self.x1 = x
+		self.y1 = y
+		self:shiftPitch()
+	end
+	
+	Spring.shiftPitch = function(self)
+		local shift = 0
+		local l = (self.x0 - self.x1) ^ 2 + (self.y0 - self.y1) ^ 2
+		if l ~= 0 then
+			shift = math.sqrt(l) / self.baseL - 1
+		end
+		
+		-- index 10 is A3
+		local note = (i - 10 + shift) / 12
+		self.sound:setPitch(2 ^ note)
 	end
 	
 	return Spring

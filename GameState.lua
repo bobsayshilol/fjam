@@ -97,10 +97,14 @@ function class.new()
 	end
 	
 	state.keypressed = function(self, key)
-		local keys = { 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']' }
+		local keys = {
+			'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=',
+			'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']',
+			'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '#',
+		}
 		for i,k in pairs(keys) do
 			if k == key then
-				print(encodeKey(i) .. math.floor(self.time / 120 + 0.5))
+				print(encodeKey(i) .. math.floor(self.time * 12 / 1000 + 0.5))
 				self.playerPiano:playKey(i)
 			end
 		end
