@@ -62,10 +62,13 @@ function ctor(x, y, width, height)
 	local Piano = {}
 	local octaves = 3
 	Piano.border = makeBorder(x, y, width, height)
-	Piano.keys = makeKeys(x, y, width, height, octaves)
 	Piano.springs = makeSprings(x, y, width, height, octaves)
+	Piano.keys = makeKeys(x, y, width, height, octaves)
 
 	Piano.update = function(self, dt)
+		for u,key in pairs(self.keys) do
+			key:update(dt)
+		end
 		for u,spring in pairs(self.springs) do
 			spring:update(dt)
 		end
@@ -85,6 +88,11 @@ function ctor(x, y, width, height)
 		-- Full border
 		love.graphics.setColor(1, 1, 1)
 		love.graphics.polygon("line", self.border)
+	end
+	
+	Piano.playKey = function(self, key)
+		self.keys[key]:press()
+		self.springs[key]:twang()
 	end
 
 	return Piano

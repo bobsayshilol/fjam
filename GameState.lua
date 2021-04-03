@@ -28,7 +28,16 @@ function class.new()
 		self.npcPiano:draw(dt)
 		self.playerPiano:draw(dt)
 	end
-
+	
+	state.keypressed = function(self, key)
+		local keys = { 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']' }
+		for i,k in pairs(keys) do
+			if k == key then
+				self.playerPiano:playKey(i)
+			end
+		end
+	end
+	
 	return state
 end
 

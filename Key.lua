@@ -1,5 +1,4 @@
 
-
 function ctor(i, x, y, w, h)
 	local Key = {}
 	Key.x = x
@@ -15,14 +14,21 @@ function ctor(i, x, y, w, h)
 		colour = 1 - (im % 2)
 	end
 	Key.colour = { colour, colour, colour }
-	Key.note = i * 1 -- TODO
+	Key.baseColour = colour
 	
 	Key.update = function(self, dt)
+		for u,c in pairs(self.colour) do
+			self.colour[u] = c * (1 - dt) + self.baseColour * dt
+		end
 	end
 	
 	Key.draw = function(self)
-		love.graphics.setColor(self.colour)
+		love.graphics.setColor(self.colour, self.colour, self.colour)
 		love.graphics.rectangle("fill", self.x,self.y, self.w,self.h)
+	end
+	
+	Key.press = function(self)
+		self.colour = { 1, 0, 0 }
 	end
 	
 	return Key
