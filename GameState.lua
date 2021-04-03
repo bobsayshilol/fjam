@@ -11,11 +11,13 @@ function class.new()
 	
 	state.enter = function(self)
 	local w,h = love.graphics.getDimensions()
-		self.piano = Piano(w/32, h/16, w*14/32, h*14/16)
+		self.npcPiano = Piano(w/32, h/16, w*14/32, h*14/16)
+		self.playerPiano = Piano(w*17/32, h/16, w*14/32, h*14/16)
 	end
 	
 	state.update = function(self, dt)
-		self.piano:update(dt)
+		self.npcPiano:update(dt)
+		self.playerPiano:update(dt)
 		return nil
 	end
 	
@@ -23,7 +25,8 @@ function class.new()
 		love.graphics.setColor(1, 1, 1)
 		love.graphics.print("Game goes here", 10, 10)
 		
-		self.piano:draw(dt)
+		self.npcPiano:draw(dt)
+		self.playerPiano:draw(dt)
 	end
 
 	return state
