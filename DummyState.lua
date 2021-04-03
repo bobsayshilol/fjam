@@ -19,7 +19,7 @@ function class.new()
 	end
 	
 	state.draw = function(self)
-		love.graphics.print("Press space to start", 10, 10)
+		love.graphics.print("State not implemented. Hit space to return", 10, 10)
 	end
 
 	return state
