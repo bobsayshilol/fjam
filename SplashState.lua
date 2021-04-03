@@ -5,25 +5,25 @@ function class.load()
 end
 
 function class.new()
-	local SplashState = {}
-	SplashState.t = 0
-	SplashState.next = nil
+	local state = {}
+	state.t = 0
+	state.next = nil
 
-	SplashState.update = function(self, dt)
+	state.update = function(self, dt)
 		self.t = self.t + dt
-		return SplashState.next
+		return state.next
 	end
 	
-	SplashState.keypressed = function(self, key)
+	state.keypressed = function(self, key)
 		print("Pressed at " .. self.t)
-		SplashState.next = "intro"
+		state.next = "intro"
 	end
 	
-	SplashState.draw = function(self)
+	state.draw = function(self)
 		love.graphics.print("Press any button to start", 10, 10)
 	end
 
-	return SplashState
+	return state
 end
 
 return class

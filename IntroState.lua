@@ -11,11 +11,11 @@ function class.load()
 end
 
 function class.new()
-	local SplashState = {}
-	SplashState.line = 1
-	SplashState.next = nil
+	local state = {}
+	state.line = 1
+	state.next = nil
 
-	SplashState.update = function(self, dt)
+	state.update = function(self, dt)
 		if self.line > #lines then
 			return "splash"
 		else
@@ -23,15 +23,15 @@ function class.new()
 		end
 	end
 	
-	SplashState.keypressed = function(self, key)
+	state.keypressed = function(self, key)
 		self.line = self.line + 1
 	end
 	
-	SplashState.draw = function(self)
+	state.draw = function(self)
 		love.graphics.print(lines[self.line], 10, 10)
 	end
 
-	return SplashState
+	return state
 end
 
 return class
