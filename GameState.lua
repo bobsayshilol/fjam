@@ -18,6 +18,17 @@ local function decodeKey(ch)
 	end
 end
 
+--[[
+	--r--
+	  q
+	--o--
+	  m
+	--l--
+	  j
+	--h--
+	  f
+	--e--
+]]
 local function parseLevel(text)
 	-- Format: <bps>(<key><time>)+
 	local split = assert(text:find("%a"))
@@ -26,10 +37,11 @@ local function parseLevel(text)
 
 	-- { time, note }
 	local notes = {}
+	local t = 0
 	for note in string.gmatch(text, "%a%d+") do
-		local t = note:sub(2)
 		local n = decodeKey(note:sub(1, 1))
 		table.insert(notes, { ts * t, n })
+		t = t + tonumber(note:sub(2))
 	end
 	return notes
 end
@@ -48,12 +60,19 @@ function class.new()
 		
 		-- 180bpm, 4b -> 12/s
 		self.notes = parseLevel("12" ..
-			"c0c4c8e9f10h11j12c14" ..
-			"c16c18c22f24c26e28c30" ..
-			"c32c36c40e41f42h43j44c46" ..
-			"c48c50c54f56c58h60c61a62"
+			"c4c4c1e1f1h1j2c4" ..
+			"c2c2c2f2c2e2c2" ..
+			"c4c4c1e1f1h1j2c4" ..
+			"c2c2c2f2c2h1c1a2"
 			)
 		
+		-- 180bpm, 4b -> 12/s
+		self.notes = parseLevel("12" ..
+			"k2n2m2r2k4k4" ..
+			"k2n2m2r2k4k4" ..
+			"k2n2m2r2k4k4" ..
+			"k2n2m2r2k4k4"
+			)
 		--[[
 		local notes = "10"
 		for i = 1,3*12 do
