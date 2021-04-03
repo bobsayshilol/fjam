@@ -24,7 +24,9 @@ function class.new()
 	end
 	
 	state.keypressed = function(self, key)
-		self.line = self.line + 1
+		if key == "space" or key == "return" then
+			self.line = self.line + 1
+		end
 	end
 	
 	state.draw = function(self)

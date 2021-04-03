@@ -13,7 +13,7 @@ function class.new()
 	end
 	
 	state.keypressed = function(self, key)
-		if key == "space" then
+		if key == "space" or key == "return" then
 			state.next = "menu"
 		end
 	end

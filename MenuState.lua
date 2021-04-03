@@ -21,7 +21,7 @@ function class.new()
 	end
 	
 	state.keypressed = function(self, key)
-		if key == "return" then
+		if key == "space" or key == "return" then
 			state.next = buttons[self.index].state
 		elseif key == "up" then
 			self.index = self.index - 1
