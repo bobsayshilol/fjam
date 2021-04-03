@@ -64,7 +64,11 @@ function ctor(x, y, width, height)
 	Piano.border = makeBorder(x, y, width, height)
 	Piano.springs = makeSprings(x, y, width, height, octaves)
 	Piano.keys = makeKeys(x, y, width, height, octaves)
-
+	Piano.x = x
+	Piano.y = y
+	Piano.width = width
+	Piano.height = height
+	
 	Piano.update = function(self, dt)
 		for u,key in pairs(self.keys) do
 			key:update(dt)
@@ -102,6 +106,16 @@ function ctor(x, y, width, height)
 	end
 	
 	Piano.setEndPos = function(self, x,y)
+		-- Clamp to bounds
+		if x < self.x then x = self.x end
+		local r = self.x + self.width
+		if x > r then x = r end
+		local y0 = self.y + keyHeight * self.height
+		if y < y0 then y = y0 end
+		local y1 = self.y + backPosition((x - self.x) / width) * self.height
+		if y > y1 then y = y1 end
+		
+		-- Update springs
 		for u,spring in pairs(self.springs) do
 			spring:setEndPos(x, y)
 		end
