@@ -30,6 +30,8 @@ end
 	--e--
 ]]
 local function parseLevel(text)
+	print("Parsing level '" .. text .. "'")
+
 	-- Format: <bps>(<key><time>)+
 	local split = assert(text:find("%a"))
 	local ts = 1000 / tonumber(text:sub(1, split - 1))
