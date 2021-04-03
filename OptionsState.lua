@@ -11,8 +11,8 @@ local options = {
 		index = 1,
 		input = false,
 		values = {
-			{ text = "FNF", func = function() g_globals.levelString = g_globals.fnf end },
 			{ text = "Hexagon", func = function() g_globals.levelString = g_globals.hexagon end },
+			{ text = "FNF", func = function() g_globals.levelString = g_globals.fnf end },
 			{ text = "Custom", func = function() g_globals.levelString = g_levelString.text end },
 		},
 	},
