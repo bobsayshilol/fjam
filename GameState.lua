@@ -34,20 +34,26 @@ end
 	  f
 	--e--
 ]]
-local function parseLevel(text)
+local function parseLevel(text, introMS)
+	introMS = introMS or 0
+	
 	-- Format: <bps>(<key><time>)+
 	local split = assert(text:find("%a"))
 	local ts = 1000 / tonumber(text:sub(1, split - 1))
 	text = text:sub(split)
-
+	
 	-- { time, note }
 	local notes = {}
 	local t = 0
 	for note in string.gmatch(text, "%a%d+") do
 		local n = decodeKey(note:sub(1, 1))
-		table.insert(notes, { ts * t, n })
+		table.insert(notes, { ts * t + introMS, n })
 		t = t + tonumber(note:sub(2))
 	end
+	
+	-- "Finished" note
+	local last = ts * t + introMS + 1000
+	table.insert(notes, { last, -2 })
 	return notes
 end
 
@@ -67,7 +73,7 @@ function class.new()
 		local level = g_globals.levelString
 		print("Loading level '" .. level .. "'")
 		self.npcTurn = true
-		self.npcState = { time = 0, piano = self.npcPiano, notes = parseLevel(level), score = 0 }
+		self.npcState = { time = 0, piano = self.npcPiano, notes = parseLevel(level, 1000), score = 0 }
 		self.playerState = { time = 0, piano = self.playerPiano, notes = parseLevel(level), score = 0 }
 	end
 	
