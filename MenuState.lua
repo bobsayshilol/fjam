@@ -2,9 +2,9 @@
 local class = {}
 
 local buttons = {
-	{ state = "intro", text = "Start" },
-	{ state = "options", text = "Level" },
-	{ state = "credits", text = "Credits" },
+	{ state = "options", text = "Start" },
+	{ state = "dummy", text = "Options" },
+	{ state = "dummy", text = "Credits" },
 	{ state = "quit", text = "Quit" },
 }
 
