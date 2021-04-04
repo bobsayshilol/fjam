@@ -18,7 +18,7 @@ local function applyCollisions(x,y, sx,sy, width,height)
 	for u,hole in pairs(holes) do
 		local hx,hy = sx + hole.x * width, sy + hole.y * height
 		local dx,dy = (x - hx)/width, (y - hy)/height
-		local l2 = dx^2 + dy^2 + 0.00001
+		local l2 = dx^2 + dy^2
 		if l2 < hole.r * hole.r then
 			local l = math.sqrt(l2)
 			dx,dy = dx/l, dy/l
