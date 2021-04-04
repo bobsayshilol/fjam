@@ -168,7 +168,9 @@ function ctor(x, y, width, height, broken)
 		-- Calculate how close this was
 		local sx,sy = spring.x0, spring.y0
 		local baseL = spring.baseL
-		local x,y = love.mouse.getPosition()
+		-- Don't use the mouse as it's not bounds checked
+		--local x,y = love.mouse.getPosition()
+		local x,y = spring.x1, spring.y1
 		local length = math.sqrt((x - sx) ^ 2 + (y - sy) ^ 2)
 		local distance = math.abs(length - baseL)
 		local closeness = 1 - math.min(math.max(distance - hitTolerance/2, 0) / hitTolerance, 1)
