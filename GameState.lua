@@ -70,7 +70,7 @@ function class.new()
 		self.npcPiano = Piano(w/32, h/16, w*14/32, h*14/16, false)
 		self.playerPiano = Piano(w*17/32, h/16, w*14/32, h*14/16, true)
 		
-		local level = g_globals.levelString
+		local level = g_globals.levels[g_globals.levelID].data
 		print("Loading level '" .. level .. "'")
 		self.npcTurn = true
 		self.npcState = { time = 0, piano = self.npcPiano, notes = parseLevel(level, 1000), score = 0 }

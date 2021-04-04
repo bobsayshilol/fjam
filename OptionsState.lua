@@ -1,30 +1,4 @@
 
-local g_levelString = { text = "3" ..
-	"a1b1c1d1Z0" .. "e1f1g1h1Z0" .. "i1j1k1l1Z0" ..
-	"m1n1o1p1Z0" .. "q1r1s1t1Z0" .. "u1v1w1x1Z0" ..
-	"y1z1A1B1Z0" .. "C1D1E1F1Z0" .. "G1H1I1J1Z0"
-}
-
-local options = {
-	{
-		text = "Song",
-		index = 1,
-		input = false,
-		values = {
-			{ text = "Hexagon", func = function() g_globals.levelString = g_globals.hexagon end },
-			{ text = "FNF", func = function() g_globals.levelString = g_globals.fnf end },
-			{ text = "Custom", func = function() g_globals.levelString = g_levelString.text end },
-		},
-	},
-	{
-		text = "Custom song",
-		index = 1,
-		input = true,
-		values = {
-			g_levelString,
-		},
-	},
-}
 
 local class = {}
 
@@ -44,6 +18,39 @@ function class.new()
 		local font = love.graphics.getFont()
 		font:setFilter("nearest")
 		state.allText = love.graphics.newText(font, "")
+		
+		-- All the available options
+		local g_levelString = g_globals.levels[1]
+		state.options = {
+			{
+				text = "Song: " .. g_globals.levels[g_globals.levelID].name,
+				inc = function(o, s)
+						g_globals.levelID = (g_globals.levelID % #g_globals.levels) + 1
+						o.text = "Song: " .. g_globals.levels[g_globals.levelID].name
+					end,
+				dec = function(o, s)
+						g_globals.levelID = ((g_globals.levelID - 2) % #g_globals.levels) + 1
+						o.text = "Song: " .. g_globals.levels[g_globals.levelID].name
+					end,
+			},
+			{
+				text = "Custom song",
+				input = true,
+				value = g_levelString,
+			},
+			{
+				text = "Copy from clipboard",
+				change = function(o, s) g_levelString.data = love.system.getClipboardText() end,
+			},
+			{
+				text = "Copy to clipboard",
+				change = function(o, s) love.system.setClipboardText(g_levelString.data) end,
+			},
+			{
+				text = "Ready",
+				change = function(o, s) s.next = "menu" end,
+			},
+		}
 	end
 	
 	state.update = function(self, dt)
@@ -51,32 +58,37 @@ function class.new()
 	end
 	
 	state.keypressed = function(self, key)
-		local option = options[self.index]
+		local option = self.options[self.index]
 		if key == "return" then
-			state.next = "menu"
+			if option.change then
+				option:change(self)
+			end
 		elseif key == "up" then
 			self.index = self.index - 1
 		elseif key == "down" then
 			self.index = self.index + 1
 		elseif key == "left" then
-			option.index = option.index - 1
+			if option.dec then
+				option:dec(self)
+			end
 		elseif key == "right" then
-			option.index = option.index + 1
-		elseif option.input then
-			local val = option.values[1]
-			if key == "backspace" then
-				val.text = val.text:sub(1, -2)
+			if option.inc then
+				option:inc(self)
+			end
+		elseif key == "backspace" then
+			if option.input then
+				local val = option.value
+				val.data = val.data:sub(1, -2)
 			end
 		end
-		self.index = ((self.index - 1) % #options) + 1
-		option.index = ((option.index - 1) % #option.values) + 1
+		self.index = ((self.index - 1) % #self.options) + 1
 	end
 	
 	state.textinput = function(self, text)
-		local option = options[self.index]
+		local option = self.options[self.index]
 		if option.input then
-			local val = option.values[1]
-			val.text = val.text .. text
+			local val = option.value
+			val.data = val.data .. text
 		end
 	end
 	
@@ -96,13 +108,17 @@ function class.new()
 		end
 		
 		local text = ""
-		for i,option in pairs(options) do
+		for i,option in pairs(self.options) do
 			if i == self.index then
 				text = text .. " - "
 			else
 				text = text .. "   "
 			end
-			text = text .. option.text .. ": " .. wrap(option.values[option.index].text, 64) .. "\n"
+			text = text .. option.text
+			if option.value then
+				text = text .. ": " .. wrap(option.value.data, 64)
+			end
+			text = text .. "\n"
 		end
 		
 		-- Update the text
@@ -116,15 +132,9 @@ function class.new()
 	end
 	
 	state.exit = function(self)
-		for i,option in pairs(options) do
-			local func = option.values[option.index].func
-			if func then
-				func()
-			end
-		end
-		
 		-- Remove reference to text
 		state.allText = nil
+		state.options = nil
 		
 		-- Reset the repeat state
 		love.keyboard.setKeyRepeat(false)
