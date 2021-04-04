@@ -106,7 +106,7 @@ function class.new()
 	
 	state.draw = function(self)
 		love.graphics.setColor(1, 1, 1)
-		love.graphics.print("Game goes here", 10, 10)
+		love.graphics.print("Press escape to return to the menu", 10, 10)
 		
 		self.npcPiano:draw(dt)
 		self.playerPiano:draw(dt)
