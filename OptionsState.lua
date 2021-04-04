@@ -37,7 +37,13 @@ function class.new()
 	state.index = 1
 	
 	state.enter = function(self)
+		-- We want repeats for backspace
 		love.keyboard.setKeyRepeat(true)
+		
+		-- UI text
+		local font = love.graphics.getFont()
+		font:setFilter("nearest")
+		state.allText = love.graphics.newText(font, "")
 	end
 	
 	state.update = function(self, dt)
@@ -75,6 +81,20 @@ function class.new()
 	end
 	
 	state.draw = function(self)
+		local function wrap(t, i)
+			if t:len() > i then
+				local output = ""
+				local spacer = "\n    "
+				while t:len() > i do
+					output = output .. "\n    " .. t:sub(1, i)
+					t = t:sub(i + 1)
+				end
+				return output .. spacer .. t
+			else
+				return t
+			end
+		end
+		
 		local text = ""
 		for i,option in pairs(options) do
 			if i == self.index then
@@ -82,9 +102,17 @@ function class.new()
 			else
 				text = text .. "   "
 			end
-			text = text .. option.text .. ": " .. option.values[option.index].text .. "\n"
+			text = text .. option.text .. ": " .. wrap(option.values[option.index].text, 32) .. "\n"
 		end
-		love.graphics.print(text, 10, 10)
+		
+		-- Update the text
+		state.allText:set(text)
+		
+		-- Draw it
+		local sw,sh = love.graphics.getDimensions()
+		local scale = 2
+		local w,h = state.allText:getDimensions()
+		love.graphics.draw(state.allText, (sw - scale * w)/2, (sh - scale * h)/2, 0, scale, scale)
 	end
 	
 	state.exit = function(self)
@@ -94,6 +122,11 @@ function class.new()
 				func()
 			end
 		end
+		
+		-- Remove reference to text
+		state.allText = nil
+		
+		-- Reset the repeat state
 		love.keyboard.setKeyRepeat(false)
 	end
 

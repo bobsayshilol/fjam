@@ -1,7 +1,7 @@
 
 local class = {}
 
-local lines = {
+local intro = {
 	"The back of the Piano broke",
 	"But it still needs to be played",
 	"You must stretch the springs yourself",
@@ -14,9 +14,15 @@ end
 function class.new()
 	local state = {}
 	state.line = 1
+	
+	state.enter = function(self)
+		local font = love.graphics.getFont()
+		font:setFilter("nearest")
+		state.allText = love.graphics.newText(font, "")
+	end
 
 	state.update = function(self, dt)
-		if self.line > #lines then
+		if self.line > #intro then
 			return "game"
 		else
 			return nil
@@ -30,7 +36,16 @@ function class.new()
 	end
 	
 	state.draw = function(self)
-		love.graphics.print(lines[self.line], 10, 10)
+		state.allText:set(intro[self.line])
+		
+		local sw,sh = love.graphics.getDimensions()
+		local scale = 4
+		local w,h = state.allText:getDimensions()
+		love.graphics.draw(state.allText, (sw - scale * w)/2, (sh - scale * h)/2, 0, scale, scale)
+	end
+	
+	state.exit = function(self)
+		state.allText = nil
 	end
 
 	return state

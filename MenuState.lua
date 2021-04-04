@@ -15,6 +15,12 @@ function class.new()
 	local state = {}
 	state.next = nil
 	state.index = 1
+	
+	state.enter = function(self)
+		local font = love.graphics.getFont()
+		font:setFilter("nearest")
+		state.allText = love.graphics.newText(font, "")
+	end
 
 	state.update = function(self, dt)
 		return state.next
@@ -41,7 +47,19 @@ function class.new()
 			end
 			text = text .. button.text .. "\n"
 		end
-		love.graphics.print(text, 10, 10)
+		
+		-- Update the text
+		state.allText:set(text)
+		
+		-- Draw it
+		local sw,sh = love.graphics.getDimensions()
+		local scale = 4
+		local w,h = state.allText:getDimensions()
+		love.graphics.draw(state.allText, (sw - scale * w)/2, (sh - scale * h)/2, 0, scale, scale)
+	end
+	
+	state.exit = function(self)
+		state.allText = nil
 	end
 
 	return state

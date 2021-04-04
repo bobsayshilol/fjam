@@ -45,6 +45,11 @@ function class.new()
 		local bw,bh = state.bottomText:getDimensions()
 		love.graphics.draw(state.bottomText, (sw - bs * bw)/2, (sh - bs * bh)*2/3, 0, bs, bs)
 	end
+	
+	state.exit = function(self)
+		state.nameText = nil
+		state.bottomText = nil
+	end
 
 	return state
 end
