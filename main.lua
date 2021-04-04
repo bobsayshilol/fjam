@@ -94,3 +94,7 @@ end
 function love.keypressed(key)
 	callMethod(g_curState, "keypressed", key)
 end
+
+function love.textinput(text)
+	callMethod(g_curState, "textinput", text)
+end

@@ -36,6 +36,10 @@ function class.new()
 	state.next = nil
 	state.index = 1
 	
+	state.enter = function(self)
+		love.keyboard.setKeyRepeat(true)
+	end
+	
 	state.update = function(self, dt)
 		return state.next
 	end
@@ -56,12 +60,18 @@ function class.new()
 			local val = option.values[1]
 			if key == "backspace" then
 				val.text = val.text:sub(1, -2)
-			elseif key:len() == 1 then
-				val.text = val.text .. key
 			end
 		end
 		self.index = ((self.index - 1) % #options) + 1
 		option.index = ((option.index - 1) % #option.values) + 1
+	end
+	
+	state.textinput = function(self, text)
+		local option = options[self.index]
+		if option.input then
+			local val = option.values[1]
+			val.text = val.text .. text
+		end
 	end
 	
 	state.draw = function(self)
@@ -84,6 +94,7 @@ function class.new()
 				func()
 			end
 		end
+		love.keyboard.setKeyRepeat(false)
 	end
 
 	return state
