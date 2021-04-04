@@ -9,6 +9,26 @@ local hitTolerance = 10
 local showArcFor = 0.7
 local arcWidth = math.pi / 16
 
+local holes = {
+	{ x = 0.18, y = keyHeight + leftHeight + 0.12, r = math.sqrt(0.18^2 + 0.12^2) },
+	--{ x = 0.8, y = (keyHeight + leftHeight + 1) / 2, r = 0.07 },
+}
+
+local function applyCollisions(x,y, sx,sy, width,height)
+	for u,hole in pairs(holes) do
+		local hx,hy = sx + hole.x * width, sy + hole.y * height
+		local dx,dy = (x - hx)/width, (y - hy)/height
+		local l2 = dx^2 + dy^2 + 0.00001
+		if l2 < hole.r * hole.r then
+			local l = math.sqrt(l2)
+			dx,dy = dx/l, dy/l
+			x = hx + dx * hole.r * width
+			y = hy + dy * hole.r * height
+		end
+	end
+	return x,y
+end
+
 local function backPosition(x)
 	local y0 = keyHeight + leftHeight
 	return y0 / (1 - x * (1 - y0))
@@ -120,6 +140,16 @@ function ctor(x, y, width, height, broken)
 			love.graphics.polygon("line", self.border)
 		end
 		
+		-- Holes
+		if self.broken then
+			for u,hole in pairs(holes) do
+				local hx,hy = self.x + hole.x * self.width, self.y + hole.y * self.height
+				local rx = self.width * hole.r
+				local ry = self.height * hole.r
+				love.graphics.ellipse("line", hx, hy, rx, ry)
+			end
+		end
+		
 		-- Hitboxes
 		local oldWidth = love.graphics.getLineWidth()
 		love.graphics.setLineWidth(hitTolerance)
@@ -188,6 +218,9 @@ function ctor(x, y, width, height, broken)
 		end
 		local y1 = self.y + bp
 		if y > y1 then y = y1 end
+		
+		-- Fixup any collisions
+		x,y = applyCollisions(x,y, self.x,self.y, self.width,self.height)
 		
 		-- Update springs
 		for u,spring in pairs(self.springs) do
