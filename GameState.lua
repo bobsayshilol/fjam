@@ -112,7 +112,7 @@ function class.new()
 	
 	state.draw = function(self)
 		love.graphics.setColor(1, 1, 1)
-		love.graphics.print("Press escape to return to the menu", 10, 10)
+		love.graphics.print("Press return to return to the menu", 10, 10)
 		
 		self.npcPiano:draw(dt)
 		self.playerPiano:draw(dt)
@@ -135,7 +135,7 @@ function class.new()
 			end
 		end
 		
-		if key == "escape" then
+		if key == "return" then
 			state.next = "menu"
 		end
 	end
