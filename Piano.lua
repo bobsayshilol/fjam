@@ -6,6 +6,8 @@ local keyHeight = 0.08
 local leftHeight = 0.42
 
 local hitTolerance = 10
+local showArcFor = 0.7
+local arcWidth = math.pi / 16
 
 local function backPosition(x)
 	local y0 = keyHeight + leftHeight
@@ -133,24 +135,33 @@ function ctor(x, y, width, height, broken)
 		local spring = self.springs[key]
 		spring:twang()
 		
+		-- Calculate how close this was
+		local sx,sy = spring.x0, spring.y0
+		local baseL = spring.baseL
+		local x,y = love.mouse.getPosition()
+		local length = math.sqrt((x - sx) ^ 2 + (y - sy) ^ 2)
+		local distance = math.abs(length - baseL)
+		local closeness = 1 - math.min(math.max(distance - hitTolerance/2, 0) / hitTolerance, 1)
+		
+		-- Display it if requested
 		if show then
-			local showFor = 0.7
-			local dtheta = math.pi / 12
-			
 			-- Calculate the angle to the player
-			local sx,sy = spring.x0, spring.y0
-			local x,y = love.mouse.getPosition()
 			local angle = math.atan2(y - sy, x - sx)
+			
+			-- Pick a colour to show how close this was
+			local colour = { 1 - closeness, closeness, 0 }
 			
 			-- Add the arc
 			local arc = {
-				x = sx, y = sy, l = spring.baseL,
-				a0 = angle + dtheta, a1 = angle - dtheta,
-				t0 = showFor, t = showFor,
-				colour = {0, 1, 0},
+				x = sx, y = sy, l = baseL,
+				a0 = angle + arcWidth, a1 = angle - arcWidth,
+				t0 = showArcFor, t = showArcFor,
+				colour = colour,
 			}
 			table.insert(self.arcs, arc)
 		end
+		
+		return closeness
 	end
 	
 	Piano.stop = function(self)
