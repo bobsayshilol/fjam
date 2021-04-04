@@ -20,16 +20,16 @@ function class.new()
 		state.allText = love.graphics.newText(font, "")
 		
 		-- All the available options
-		local g_levelString = g_globals.levels[1]
+		local g_levelString = g_globals.levels[0]
 		state.options = {
 			{
 				text = "Song: " .. g_globals.levels[g_globals.levelID].name,
 				inc = function(o, s)
-						g_globals.levelID = (g_globals.levelID % #g_globals.levels) + 1
+						g_globals.levelID = (g_globals.levelID + 1) % (#g_globals.levels + 1)
 						o.text = "Song: " .. g_globals.levels[g_globals.levelID].name
 					end,
 				dec = function(o, s)
-						g_globals.levelID = ((g_globals.levelID - 2) % #g_globals.levels) + 1
+						g_globals.levelID = (g_globals.levelID - 1) % (#g_globals.levels + 1)
 						o.text = "Song: " .. g_globals.levels[g_globals.levelID].name
 					end,
 			},
