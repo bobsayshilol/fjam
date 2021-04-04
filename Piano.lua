@@ -37,16 +37,21 @@ local function makeSprings(x, y, width, height, octaves)
 	return springs
 end
 
-local function makeBorder(x, y, width, height)
+local function makeBorder(x, y, width, height, broken)
 	local points = { 1,0, 0,0, }
 	local steps = 10
 	
-	local dx = 1/steps
-	for i = 0,steps do
-		local x = dx * i
-		local y = backPosition(x)
-		table.insert(points, x)
-		table.insert(points, y)
+	if broken then
+		-- Only the endpoints when broken
+		points = { 1,backPosition(1), 1,0, 0,0, 0,backPosition(0) }
+	else
+		local dx = 1/steps
+		for i = 0,steps do
+			local x = dx * i
+			local y = backPosition(x)
+			table.insert(points, x)
+			table.insert(points, y)
+		end
 	end
 	
 	local border = {}
@@ -58,16 +63,17 @@ local function makeBorder(x, y, width, height)
 	return border
 end
 
-function ctor(x, y, width, height)
+function ctor(x, y, width, height, broken)
 	local Piano = {}
 	local octaves = 3
-	Piano.border = makeBorder(x, y, width, height)
+	Piano.border = makeBorder(x, y, width, height, broken)
 	Piano.springs = makeSprings(x, y, width, height, octaves)
 	Piano.keys = makeKeys(x, y, width, height, octaves)
 	Piano.x = x
 	Piano.y = y
 	Piano.width = width
 	Piano.height = height
+	Piano.broken = broken
 	
 	Piano.update = function(self, dt)
 		for u,key in pairs(self.keys) do
@@ -91,7 +97,12 @@ function ctor(x, y, width, height)
 		
 		-- Full border
 		love.graphics.setColor(1, 1, 1)
-		love.graphics.polygon("line", self.border)
+		if self.broken then
+			-- We don't want a complete polygon since the back must be open
+			love.graphics.line(self.border)
+		else
+			love.graphics.polygon("line", self.border)
+		end
 	end
 	
 	Piano.playKey = function(self, key)
@@ -108,11 +119,20 @@ function ctor(x, y, width, height)
 	Piano.setEndPos = function(self, x,y)
 		-- Clamp to bounds
 		if x < self.x then x = self.x end
+		
 		local r = self.x + self.width
 		if x > r then x = r end
+		
 		local y0 = self.y + keyHeight * self.height
 		if y < y0 then y = y0 end
-		local y1 = self.y + backPosition((x - self.x) / width) * self.height
+		
+		local bp
+		if self.broken then
+			bp = self.height
+		else
+			bp = backPosition((x - self.x) / width) * self.height
+		end
+		local y1 = self.y + bp
 		if y > y1 then y = y1 end
 		
 		-- Update springs
