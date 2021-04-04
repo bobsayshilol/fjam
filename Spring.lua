@@ -27,7 +27,6 @@ function ctor(i, x0,y0, x1,y1)
 	Spring.y0 = y0
 	Spring.x1 = x1
 	Spring.y1 = y1
-	Spring.baseL = math.sqrt((Spring.x0 - Spring.x1) ^ 2 + (Spring.y0 - Spring.y1) ^ 2)
 	Spring.amplitude = 0
 	Spring.sound = makeSound()
 	
@@ -66,11 +65,15 @@ function ctor(i, x0,y0, x1,y1)
 		self:shiftPitch()
 	end
 	
+	Spring.length = function(self)
+		return math.sqrt((self.x0 - self.x1) ^ 2 + (self.y0 - self.y1) ^ 2)
+	end
+	Spring.baseL = Spring:length()
+	
 	Spring.shiftPitch = function(self)
 		-- Fundamental frequency ~ 1/L
 		-- ==> 2x length -> 2x Hz
-		local l = (self.x0 - self.x1) ^ 2 + (self.y0 - self.y1) ^ 2
-		local shift = math.sqrt(l) / self.baseL
+		local shift = self:length() / self.baseL
 		
 		-- index 10 is A3
 		local note = (i - 10) / 12
