@@ -24,6 +24,13 @@ local fnf4b =
 	"l2l2l2o2l2q1l1j2Z0"
 
 
+local mega2b =
+	"o1o1A2v2v1u2t2r2o1r1t1" ..
+	"m1m1A2v2v1u2t2r2o1r1t1" ..
+	"l1l1A2v2v1u2t2r2o1r1t1" ..
+	"k1k1A2v2u1u2t2r2o1r1t1Z0"
+
+
 local levels = {
 	-- Custom must come first
 	[0] = {
@@ -35,25 +42,37 @@ local levels = {
 	},
 	
 	-- 120bpm, 4b -> 8/s
-	[1] = {
+	{
 		name = "Hexagon (easy)",
 		data = "8" .. hexagon4b,
 	},
 	
 	-- 120bpm, 4b -> 8/s
-	[2] = {
+	{
 		name = "FNF (medium)",
 		data = "8" .. fnf4b,
 	},
 	
+	-- 120bpm, 2b -> 4/s
+	{
+		name = "Mega (medium)",
+		data = "4" .. mega2b,
+	},
+	
 	-- 180bpm, 4b -> 12/s
-	[3] = {
+	{
 		name = "Hexagon (hard)",
 		data = "12" .. hexagon4b,
 	},
 	
+	-- 180bpm, 2b -> 6/s
+	{
+		name = "Mega (hard)",
+		data = "6" .. mega2b,
+	},
+	
 	-- 180bpm, 4b -> 12/s
-	[4] = {
+	{
 		name = "FNF (hard)",
 		data = "12" .. fnf4b,
 	},
