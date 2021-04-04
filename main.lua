@@ -76,3 +76,7 @@ end
 function love.textinput(text)
 	callMethod(g_curState, "textinput", text)
 end
+
+function love.mousemoved(x, y)
+	callMethod(g_curState, "mousemoved", x, y)
+end

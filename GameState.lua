@@ -77,6 +77,8 @@ function class.new()
 		self.playerState = { time = 0, piano = self.playerPiano, notes = parseLevel(level), score = 0 }
 		self.finished = false
 		self.finishedText = nil
+		
+		self.mouse = { x = love.mouse.getX(), y = love.mouse.getY() }
 	end
 	
 	state.updateNotes = function(self, dt, info)
@@ -126,12 +128,16 @@ function class.new()
 		end
 		
 		-- Update positions of the springs
-		self.playerPiano:setEndPos(love.mouse.getPosition())
+		self.playerPiano:setEndPos(self.mouse.x, self.mouse.y)
 		
 		-- Update the instruments
 		self.npcPiano:update(dt)
 		self.playerPiano:update(dt)
 		return self.next
+	end
+	
+	state.mousemoved = function(self, x, y)
+		self.mouse = { x = x, y = y }
 	end
 	
 	state.draw = function(self)
