@@ -34,6 +34,10 @@ function class.new()
 		end
 	end
 	
+	state.touchpressed = function(self)
+		state.next = "intro"
+	end
+	
 	state.draw = function(self)
 		local sw,sh = love.graphics.getDimensions()
 		local ns = 10

@@ -80,3 +80,11 @@ end
 function love.mousemoved(x, y)
 	callMethod(g_curState, "mousemoved", x, y)
 end
+
+function love.touchpressed()
+	callMethod(g_curState, "touchpressed")
+end
+
+function love.touchmoved(id, x, y)
+	callMethod(g_curState, "touchmoved", id, x, y)
+end

@@ -35,6 +35,10 @@ function class.new()
 		end
 	end
 	
+	state.touchpressed = function(self)
+		self.line = self.line + 1
+	end
+	
 	state.draw = function(self)
 		state.allText:set(intro[self.line])
 		

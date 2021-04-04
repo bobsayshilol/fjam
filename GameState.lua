@@ -140,6 +140,17 @@ function class.new()
 		self.mouse = { x = x, y = y }
 	end
 	
+	state.touchmoved = function(self, id, x, y)
+		self.mouse = { x = x, y = y }
+	end
+	
+	state.touchpressed = function(self)
+		-- Touch events restart
+		if self.finishedText then
+			state.next = "game"
+		end
+	end
+	
 	state.draw = function(self)
 		self.npcPiano:draw(dt)
 		self.playerPiano:draw(dt)
