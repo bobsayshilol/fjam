@@ -75,6 +75,8 @@ function class.new()
 		self.npcTurn = true
 		self.npcState = { time = 0, piano = self.npcPiano, notes = parseLevel(level, 1000), score = 0 }
 		self.playerState = { time = 0, piano = self.playerPiano, notes = parseLevel(level), score = 0 }
+		self.finished = false
+		self.finishedText = nil
 	end
 	
 	state.updateNotes = function(self, dt, info)
@@ -83,7 +85,7 @@ function class.new()
 		-- Play the next note
 		while #info.notes > 0 and info.notes[1][1] < info.time do
 			local note = info.notes[1][2]
-			if note ~= -1 then
+			if note >= 0 then
 				local score = info.piano:playKey(note, not self.npcTurn)
 				info.score = info.score + score
 			end
@@ -91,19 +93,35 @@ function class.new()
 			if note == -1 then
 				self.npcTurn = not self.npcTurn
 				break
+			elseif note == -2 then
+				self.finished = true
+				break
 			end
 		end
 	end
 	
 	state.update = function(self, dt)
-		if self.npcTurn then
-			self:updateNotes(dt, self.npcState)
-		else
-			local oldScore = self.playerState.score
-			self:updateNotes(dt, self.playerState)
-			local deltaScore = self.playerState.score - oldScore
-			if deltaScore > 0 then
-				-- TODO: anything here?
+		if not self.finished then
+			if self.npcTurn then
+				self:updateNotes(dt, self.npcState)
+			else
+				local oldScore = self.playerState.score
+				self:updateNotes(dt, self.playerState)
+				local deltaScore = self.playerState.score - oldScore
+				if deltaScore > 0 then
+					-- TODO: anything here?
+				end
+			end
+			
+			-- If we're now finished then popup a message
+			if self.finished then
+				local font = love.graphics.getFont()
+				font:setFilter("nearest")
+				local score = math.floor(self.playerState.score * 100)
+				local text = string.rep(" ", 16) ..
+					"You scored " .. score .. "\n" ..
+					"Press return to return to the main menu"
+				self.finishedText = love.graphics.newText(font, text)
 			end
 		end
 		
@@ -117,9 +135,6 @@ function class.new()
 	end
 	
 	state.draw = function(self)
-		love.graphics.setColor(1, 1, 1)
-		love.graphics.print("Press return to return to the menu", 10, 10)
-		
 		self.npcPiano:draw(dt)
 		self.playerPiano:draw(dt)
 		
@@ -127,6 +142,13 @@ function class.new()
 		love.graphics.setColor(1, 1, 1)
 		local w,h = love.graphics.getDimensions()
 		love.graphics.print("Score: " .. math.floor(self.playerState.score * 100), w/2, 10)
+		
+		-- Show the finished message
+		if self.finishedText then
+			local scale = 5
+			local tw,th = self.finishedText:getDimensions()
+			love.graphics.draw(self.finishedText, (w - scale * tw)/2, (h - scale * th)/2, 0, scale, scale)
+		end
 	end
 	
 	state.keypressed = function(self, key)
@@ -141,7 +163,7 @@ function class.new()
 			end
 		end
 		
-		if key == "return" then
+		if (self.finishedText and key == "return") or key == "escape" then
 			state.next = "menu"
 		end
 	end
