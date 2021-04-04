@@ -102,7 +102,7 @@ function class.new()
 			else
 				text = text .. "   "
 			end
-			text = text .. option.text .. ": " .. wrap(option.values[option.index].text, 32) .. "\n"
+			text = text .. option.text .. ": " .. wrap(option.values[option.index].text, 64) .. "\n"
 		end
 		
 		-- Update the text
