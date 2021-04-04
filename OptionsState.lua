@@ -39,11 +39,11 @@ function class.new()
 				value = g_levelString,
 			},
 			{
-				text = "Copy from clipboard",
+				text = "Copy custom from clipboard",
 				change = function(o, s) g_levelString.data = love.system.getClipboardText() end,
 			},
 			{
-				text = "Copy to clipboard",
+				text = "Copy custom to clipboard",
 				change = function(o, s) love.system.setClipboardText(g_levelString.data) end,
 			},
 			{
