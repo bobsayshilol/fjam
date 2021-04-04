@@ -78,7 +78,7 @@ function class.new()
 		while #info.notes > 0 and info.notes[1][1] < info.time do
 			local note = info.notes[1][2]
 			if note ~= -1 then
-				info.piano:playKey(note)
+				info.piano:playKey(note, not self.npcTurn)
 			end
 			table.remove(info.notes, 1)
 			if note == -1 then

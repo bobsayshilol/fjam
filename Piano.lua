@@ -5,6 +5,8 @@ local Key = assert(require("Key"))
 local keyHeight = 0.08
 local leftHeight = 0.42
 
+local hitTolerance = 10
+
 local function backPosition(x)
 	local y0 = keyHeight + leftHeight
 	return y0 / (1 - x * (1 - y0))
@@ -74,6 +76,7 @@ function ctor(x, y, width, height, broken)
 	Piano.width = width
 	Piano.height = height
 	Piano.broken = broken
+	Piano.arcs = {}
 	
 	Piano.update = function(self, dt)
 		for u,key in pairs(self.keys) do
@@ -81,6 +84,17 @@ function ctor(x, y, width, height, broken)
 		end
 		for u,spring in pairs(self.springs) do
 			spring:update(dt)
+		end
+		
+		-- Tick down visible arcs
+		for u,arc in pairs(self.arcs) do
+			arc.t = arc.t - dt
+			-- Scale colour
+			arc.colour[4] = arc.t / arc.t0
+			-- Remove if done
+			if arc.t < 0 then
+				self.arcs[u] = nil
+			end
 		end
 	end
 	
@@ -103,11 +117,40 @@ function ctor(x, y, width, height, broken)
 		else
 			love.graphics.polygon("line", self.border)
 		end
+		
+		-- Hitboxes
+		local oldWidth = love.graphics.getLineWidth()
+		love.graphics.setLineWidth(hitTolerance)
+		for u,arc in pairs(self.arcs) do
+			love.graphics.setColor(arc.colour)
+			love.graphics.arc("line", "open", arc.x,arc.y, arc.l, arc.a0,arc.a1)
+		end
+		love.graphics.setLineWidth(oldWidth)
 	end
 	
-	Piano.playKey = function(self, key)
+	Piano.playKey = function(self, key, show)
 		self.keys[key]:press()
-		self.springs[key]:twang()
+		local spring = self.springs[key]
+		spring:twang()
+		
+		if show then
+			local showFor = 0.7
+			local dtheta = math.pi / 12
+			
+			-- Calculate the angle to the player
+			local sx,sy = spring.x0, spring.y0
+			local x,y = love.mouse.getPosition()
+			local angle = math.atan2(y - sy, x - sx)
+			
+			-- Add the arc
+			local arc = {
+				x = sx, y = sy, l = spring.baseL,
+				a0 = angle + dtheta, a1 = angle - dtheta,
+				t0 = showFor, t = showFor,
+				colour = {0, 1, 0},
+			}
+			table.insert(self.arcs, arc)
+		end
 	end
 	
 	Piano.stop = function(self)
