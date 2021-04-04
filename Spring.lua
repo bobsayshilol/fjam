@@ -67,13 +67,14 @@ function ctor(i, x0,y0, x1,y1)
 	end
 	
 	Spring.shiftPitch = function(self)
-		-- Random bodge for the shift
+		-- Fundamental frequency ~ 1/L
+		-- ==> 2x length -> 2x Hz
 		local l = (self.x0 - self.x1) ^ 2 + (self.y0 - self.y1) ^ 2
-		local shift = math.sqrt(l) / self.baseL - 1
+		local shift = math.sqrt(l) / self.baseL
 		
 		-- index 10 is A3
-		local note = (i - 10) / 12 + shift
-		self.sound:setPitch(2 ^ note)
+		local note = (i - 10) / 12
+		self.sound:setPitch(2 ^ note * shift)
 	end
 	
 	return Spring
