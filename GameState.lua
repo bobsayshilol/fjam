@@ -67,8 +67,8 @@ function class.new()
 		local level = g_globals.levelString
 		print("Loading level '" .. level .. "'")
 		self.npcTurn = true
-		self.npcState = { time = 0, piano = self.npcPiano, notes = parseLevel(level) }
-		self.playerState = { time = 0, piano = self.playerPiano, notes = parseLevel(level) }
+		self.npcState = { time = 0, piano = self.npcPiano, notes = parseLevel(level), score = 0 }
+		self.playerState = { time = 0, piano = self.playerPiano, notes = parseLevel(level), score = 0 }
 	end
 	
 	state.updateNotes = function(self, dt, info)
@@ -78,7 +78,8 @@ function class.new()
 		while #info.notes > 0 and info.notes[1][1] < info.time do
 			local note = info.notes[1][2]
 			if note ~= -1 then
-				info.piano:playKey(note, not self.npcTurn)
+				local score = info.piano:playKey(note, not self.npcTurn)
+				info.score = info.score + score
 			end
 			table.remove(info.notes, 1)
 			if note == -1 then
@@ -92,7 +93,12 @@ function class.new()
 		if self.npcTurn then
 			self:updateNotes(dt, self.npcState)
 		else
+			local oldScore = self.playerState.score
 			self:updateNotes(dt, self.playerState)
+			local deltaScore = self.playerState.score - oldScore
+			if deltaScore > 0 then
+				-- TODO: anything here?
+			end
 		end
 		
 		-- Update positions of the springs
@@ -110,6 +116,11 @@ function class.new()
 		
 		self.npcPiano:draw(dt)
 		self.playerPiano:draw(dt)
+		
+		-- Draw our score
+		love.graphics.setColor(1, 1, 1)
+		local w,h = love.graphics.getDimensions()
+		love.graphics.print("Score: " .. math.floor(self.playerState.score * 100), w/2, 10)
 	end
 	
 	state.keypressed = function(self, key)
