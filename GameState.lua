@@ -120,7 +120,6 @@ function class.new()
 		}
 		for i,k in pairs(keys) do
 			if k == key then
-				print(encodeKey(i) .. math.floor(self.time * 12 / 1000 + 0.5))
 				self.playerPiano:playKey(i)
 			end
 		end
