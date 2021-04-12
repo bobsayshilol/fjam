@@ -48,7 +48,7 @@ function class.new()
 			},
 			{
 				text = "Ready",
-				change = function(o, s) s.next = "game" end,
+				change = function(o, s) s.next = "intro" end,
 			},
 		}
 	end

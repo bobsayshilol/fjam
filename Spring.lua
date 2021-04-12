@@ -10,7 +10,7 @@ local function makeSound()
 		local hz = 220
 		local w = hz * 2 * 3.14159 / rate
 		for t = 1,rate do
-			local s = math.sin(w * t) / 10
+			local s = math.sin(w * t) / 4
 			soundData:setSample(t-1, s)
 		end
 		sharedSound = love.audio.newSource(soundData)
